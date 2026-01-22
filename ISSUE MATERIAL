@@ -1,0 +1,104 @@
+index.html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Material Stock System</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    input, button { margin: 5px; padding: 5px; }
+    table { border-collapse: collapse; margin-top: 20px; width: 100%; }
+    th, td { border: 1px solid black; padding: 8px; text-align: center; }
+    th { background: #eee; }
+  </style>
+</head>
+<body>
+
+<h2>Raw Material Stock System</h2>
+
+<input id="material" placeholder="Material Name">
+<input id="inward" type="number" placeholder="Inward">
+<input id="outward" type="number" placeholder="Outward">
+<button onclick="addEntry()">Add</button>
+
+<table>
+  <thead>
+    <tr>
+      <th>Material</th>
+      <th>Inward</th>
+      <th>Outward</th>
+      <th>Balance</th>
+      <th>Edit</th>
+      <th>Delete</th>
+    </tr>
+  </thead>
+  <tbody id="tableBody"></tbody>
+</table>
+
+<h3>Material Wise Total</h3>
+<div id="totals"></div>
+
+<script>
+let data = JSON.parse(localStorage.getItem("stockData")) || [];
+
+function saveData() {
+  localStorage.setItem("stockData", JSON.stringify(data));
+}
+
+function render() {
+  tableBody.innerHTML = "";
+  let totals = {};
+
+  data.forEach((item, index) => {
+    let bal = item.inward - item.outward;
+
+    tableBody.innerHTML += `
+      <tr>
+        <td>${item.material}</td>
+        <td>${item.inward}</td>
+        <td>${item.outward}</td>
+        <td>${bal}</td>
+        <td><button onclick="editEntry(${index})">Edit</button></td>
+        <td><button onclick="deleteEntry(${index})">Delete</button></td>
+      </tr>
+    `;
+
+    totals[item.material] = (totals[item.material] || 0) + bal;
+  });
+
+  let tHtml = "";
+  for (let m in totals) {
+    tHtml += `<p><b>${m}</b> : ${totals[m]}</p>`;
+  }
+  document.getElementById("totals").innerHTML = tHtml;
+}
+
+function addEntry() {
+  data.push({
+    material: material.value,
+    inward: Number(inward.value),
+    outward: Number(outward.value)
+  });
+  saveData();
+  render();
+  material.value = inward.value = outward.value = "";
+}
+
+function deleteEntry(index) {
+  data.splice(index, 1);
+  saveData();
+  render();
+}
+
+function editEntry(index) {
+  let item = data[index];
+  material.value = item.material;
+  inward.value = item.inward;
+  outward.value = item.outward;
+  deleteEntry(index);
+}
+
+render();
+</script>
+
+</body>
+</html>
