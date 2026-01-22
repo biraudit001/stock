@@ -1,2 +1,2 @@
-# stock
+# STORE
 MATERIAL BALANCING
