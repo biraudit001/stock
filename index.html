@@ -1,34 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Material Stock Management</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
 <body>
 
 <h1>Material Stock Management</h1>
 
-<div class="container">
+<div class="box">
   <h2>Material Receive</h2>
   <input id="r_name" placeholder="Material name">
   <input id="r_qty" type="number" placeholder="Quantity">
   <button onclick="receiveMaterial()">Receive</button>
 </div>
 
-<div class="container">
+<div class="box">
   <h2>Material Issue</h2>
   <input id="i_name" placeholder="Material name">
   <input id="i_qty" type="number" placeholder="Quantity">
   <button onclick="issueMaterial()">Issue</button>
 </div>
 
-<div class="container">
+<div class="box">
   <h2>Stock Sheet</h2>
-  <table>
-    <tr>
-      <th>Date</th>
-      <th>Material</th>
-      <th>Received</th>
-      <th>Issued</th>
-      <th>Balance</th>
-    </tr>
-    <tbody id="stockTable"></tbody>
-  </table>
-</div>
-
-<script src="script.js"></script>
-</body>
+  <table border="1">
