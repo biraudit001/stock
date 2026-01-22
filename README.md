@@ -1,66 +1,3 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Material Stock System</title>
-  <style>
-    body { font-family: Arial; padding: 20px; }
-    button { padding: 8px; margin: 5px; }
-    input { padding: 6px; margin: 5px; }
-    table { border-collapse: collapse; width: 100%; margin-top: 10px; }
-    th, td { border: 1px solid black; padding: 6px; text-align: center; }
-    th { background: #eee; }
-    .box { display: none; }
-  </style>
-</head>
-<body>
-
-<h2>Material Stock Management</h2>
-
-<button onclick="show('receive')">Material Receive</button>
-<button onclick="show('issue')">Material Issue</button>
-<button onclick="show('stock')">Stock Sheet</button>
-
-<!-- RECEIVE -->
-<div id="receive" class="box">
-  <h3>Material Receive</h3>
-  <input id="rName" placeholder="Material Name">
-  <input id="rQty" type="number" placeholder="Quantity">
-  <button onclick="addReceive()">Save</button>
-
-  <table>
-    <tr><th>Date</th><th>Material</th><th>Qty</th></tr>
-    <tbody id="receiveTable"></tbody>
-  </table>
-</div>
-
-<!-- ISSUE -->
-<div id="issue" class="box">
-  <h3>Material Issue</h3>
-  <input id="iName" placeholder="Material Name">
-  <input id="iQty" type="number" placeholder="Quantity">
-  <button onclick="addIssue()">Save</button>
-
-  <table>
-    <tr><th>Date</th><th>Material</th><th>Qty</th></tr>
-    <tbody id="issueTable"></tbody>
-  </table>
-</div>
-
-<!-- STOCK -->
-<div id="stock" class="box">
-  <h3>Stock Sheet</h3>
-  <table>
-    <tr>
-      <th>Material</th>
-      <th>Total Received</th>
-      <th>Total Issued</th>
-      <th>Balance</th>
-    </tr>
-    <tbody id="stockTable"></tbody>
-  </table>
-</div>
-
-<script>
 let receives = JSON.parse(localStorage.getItem("receives")) || [];
 let issues = JSON.parse(localStorage.getItem("issues")) || [];
 
@@ -81,6 +18,7 @@ function show(id) {
   if(id==="stock") renderStock();
 }
 
+/* ===== RECEIVE ===== */
 function addReceive() {
   receives.push({date: today(), name: rName.value, qty: Number(rQty.value)});
   save();
@@ -88,6 +26,41 @@ function addReceive() {
   renderReceive();
 }
 
+function editReceive(i) {
+  let r = receives[i];
+  let qty = prompt("Edit Quantity", r.qty);
+  if(qty !== null) {
+    r.qty = Number(qty);
+    save();
+    renderReceive();
+  }
+}
+
+function deleteReceive(i) {
+  if(confirm("Delete this receive entry?")) {
+    receives.splice(i,1);
+    save();
+    renderReceive();
+  }
+}
+
+function renderReceive() {
+  receiveTable.innerHTML = "";
+  receives.forEach((r,i)=>{
+    receiveTable.innerHTML += `
+      <tr>
+        <td>${r.date}</td>
+        <td>${r.name}</td>
+        <td>${r.qty}</td>
+        <td>
+          <button onclick="editReceive(${i})">Edit</button>
+          <button onclick="deleteReceive(${i})">Delete</button>
+        </td>
+      </tr>`;
+  });
+}
+
+/* ===== ISSUE ===== */
 function addIssue() {
   issues.push({date: today(), name: iName.value, qty: Number(iQty.value)});
   save();
@@ -95,20 +68,41 @@ function addIssue() {
   renderIssue();
 }
 
-function renderReceive() {
-  receiveTable.innerHTML = "";
-  receives.forEach(r=>{
-    receiveTable.innerHTML += `<tr><td>${r.date}</td><td>${r.name}</td><td>${r.qty}</td></tr>`;
-  });
+function editIssue(i) {
+  let it = issues[i];
+  let qty = prompt("Edit Quantity", it.qty);
+  if(qty !== null) {
+    it.qty = Number(qty);
+    save();
+    renderIssue();
+  }
+}
+
+function deleteIssue(i) {
+  if(confirm("Delete this issue entry?")) {
+    issues.splice(i,1);
+    save();
+    renderIssue();
+  }
 }
 
 function renderIssue() {
   issueTable.innerHTML = "";
-  issues.forEach(i=>{
-    issueTable.innerHTML += `<tr><td>${i.date}</td><td>${i.name}</td><td>${i.qty}</td></tr>`;
+  issues.forEach((it,i)=>{
+    issueTable.innerHTML += `
+      <tr>
+        <td>${it.date}</td>
+        <td>${it.name}</td>
+        <td>${it.qty}</td>
+        <td>
+          <button onclick="editIssue(${i})">Edit</button>
+          <button onclick="deleteIssue(${i})">Delete</button>
+        </td>
+      </tr>`;
   });
 }
 
+/* ===== STOCK ===== */
 function renderStock() {
   let stock = {};
   receives.forEach(r=>{
@@ -134,6 +128,3 @@ function renderStock() {
 
 show("receive");
 </script>
-
-</body>
-</html>
