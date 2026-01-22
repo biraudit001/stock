@@ -5,8 +5,10 @@ function saveStock() {
 }
 
 function receiveMaterial() {
-  let name = document.getElementById("r_name").value;
-  let qty = Number(document.getElementById("r_qty").value);
+  const name = document.getElementById("r_name").value;
+  const qty = Number(document.getElementById("r_qty").value);
+
+  if (!name || qty <= 0) return alert("Enter valid data");
 
   stock.push({
     date: new Date().toLocaleDateString(),
@@ -20,8 +22,10 @@ function receiveMaterial() {
 }
 
 function issueMaterial() {
-  let name = document.getElementById("i_name").value;
-  let qty = Number(document.getElementById("i_qty").value);
+  const name = document.getElementById("i_name").value;
+  const qty = Number(document.getElementById("i_qty").value);
+
+  if (!name || qty <= 0) return alert("Enter valid data");
 
   stock.push({
     date: new Date().toLocaleDateString(),
@@ -35,7 +39,7 @@ function issueMaterial() {
 }
 
 function showStock() {
-  let table = document.getElementById("stockTable");
+  const table = document.getElementById("stockTable");
   table.innerHTML = "";
 
   let balance = {};
@@ -44,7 +48,7 @@ function showStock() {
     if (!balance[item.material]) balance[item.material] = 0;
     balance[item.material] += item.receive - item.issue;
 
-    table.innerHTML += `
+    const row = `
       <tr>
         <td>${item.date}</td>
         <td>${item.material}</td>
@@ -53,6 +57,7 @@ function showStock() {
         <td>${balance[item.material]}</td>
       </tr>
     `;
+    table.innerHTML += row;
   });
 }
 
